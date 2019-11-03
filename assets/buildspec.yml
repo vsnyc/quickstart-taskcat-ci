@@ -30,7 +30,7 @@ phases:
       - ls -lR
       - cd ..
       - echo Installing Taskcat using pip3...
-      - pip install taskcat==0.8.36
+      - pip install taskcat==0.8.49
       - echo Verifying Taskcat installation...
       - taskcat
       - echo Configuring aws cli...
@@ -38,7 +38,7 @@ phases:
   build:
     commands:
       - echo Entered the build phase...
-      - taskcat -c $PROJECTNAME/ci/taskcat.yml
+      - taskcat -c $PROJECTNAME/ci/taskcat.yml --enable-sig-v2
       - ls -1 taskcat_outputs
       - ls -1 taskcat_outputs | while read LOG; do cat taskcat_outputs/${LOG}; done
       - echo Zipping and uploading report to $ARTIFACT_BUCKET S3 bucket
