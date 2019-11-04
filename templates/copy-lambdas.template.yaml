@@ -110,8 +110,8 @@ Resources:
               logging.error('Exception: %s' % e, exc_info=True)
               status = cfnresponse.FAILED
             finally:
-                timer.cancel()
-                  cfnresponse.send(event, context, status, {}, None)
+              timer.cancel()
+              cfnresponse.send(event, context, status, {}, None)
 
       Description: Copies objects from a source S3 bucket to a destination S3 bucket
       Handler: index.handler
