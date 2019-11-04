@@ -109,28 +109,28 @@ Resources:
                 TemplateConfiguration: !Sub "TemplateSource::${ProdStackConfig}"
                 TemplatePath: !Sub "TemplateSource::${TemplateFileName}"
               RunOrder: '1'
-                - Name: ApproveChangeSet
-                  ActionTypeId:
-                    Category: Approval
-                    Owner: AWS
-                    Provider: Manual
-                    Version: '1'
-                  Configuration:
-                    NotificationArn: !Ref CodePipelineSNSTopic
-                    CustomData: !Sub 'A new change set was created for the ${ProdStackName} stack. Do you want to implement the changes?'
-                  RunOrder: '2'
-                - Name: ExecuteChangeSet
-                  ActionTypeId:
-                    Category: Deploy
-                    Owner: AWS
-                    Provider: CloudFormation
-                    Version: '1'
-                  Configuration:
-                    ActionMode: CHANGE_SET_EXECUTE
-                    ChangeSetName: !Sub "${ProdStackName}-change-set"
-                    RoleArn: !Ref CFNRoleArn
-                    StackName: !Ref ProdStackName
-                  RunOrder: '3'
+            - Name: ApproveChangeSet
+              ActionTypeId:
+                Category: Approval
+                Owner: AWS
+                Provider: Manual
+                Version: '1'
+              Configuration:
+                NotificationArn: !Ref CodePipelineSNSTopic
+                CustomData: !Sub 'A new change set was created for the ${ProdStackName} stack. Do you want to implement the changes?'
+              RunOrder: '2'
+            - Name: ExecuteChangeSet
+              ActionTypeId:
+                Category: Deploy
+                Owner: AWS
+                Provider: CloudFormation
+                Version: '1'
+              Configuration:
+                ActionMode: CHANGE_SET_EXECUTE
+                ChangeSetName: !Sub "${ProdStackName}-change-set"
+                RoleArn: !Ref CFNRoleArn
+                StackName: !Ref ProdStackName
+              RunOrder: '3'
 
   CodeBuildS3Sync:
     Type: AWS::CodeBuild::Project
@@ -201,7 +201,7 @@ Resources:
                 - echo Entered the deploy phase...
                 - cd $PROJECTNAME
                 - rm -rf .git/
-                - aws s3 sync . s3://$ARTIFACT_BUCKET/$PROJECTNAME/
+                - aws s3 sync . s3://$CONFIG_BUCKET/$PROJECTNAME/
                 - aws s3 cp s3://$CONFIG_BUCKET/$PROD_CONFIG .
                 - INPUT_FILE=$(echo $PROD_CONFIG | awk -F/ '{print $NF}')
                 - aws s3 cp templates/$CFN_ROOT_TEMPLATE .
