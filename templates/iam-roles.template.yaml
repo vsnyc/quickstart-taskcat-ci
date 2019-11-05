@@ -58,6 +58,10 @@ Resources:
                 Resource: '*'
                 Effect: Allow
               - Action:
+                  - sns:Publish
+                Resource: '*'
+                Effect: Allow
+              - Action:
                   - codebuild:BatchGetBuilds
                   - codebuild:StartBuild
                 Resource: '*'

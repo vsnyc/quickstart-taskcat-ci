@@ -33,6 +33,21 @@ Resources:
                 Branch: !Ref 'SourceRepoBranch'
                 OAuthToken: !Ref 'GitHubOAuthToken'
               RunOrder: 1
+            - Name: S3Config
+              ActionTypeId:
+                Category: Source
+                Owner: AWS
+                Provider: S3
+                Version: '1'
+              RunOrder: 2
+              Configuration:
+                PollForSourceChanges: 'false'
+                S3Bucket: !Ref ConfigBucket
+                S3ObjectKey: !Sub '${GitHubRepoName}.zip'
+              OutputArtifacts:
+                - name: S3ConfigOut
+              InputArtifacts: []
+              Region: !Ref 'AWS::Region'
         - Name: Build
           Actions:
             - Name: CodeBuild
@@ -46,7 +61,7 @@ Resources:
               OutputArtifacts: []
               Configuration:
                 ProjectName: !Ref 'CodeBuild'
-              RunOrder: 2
+              RunOrder: 1
         - Name: Deploy
           Actions:
             - Name: Git-merge
@@ -60,37 +75,23 @@ Resources:
                 UserParameters: !Sub '{ "owner": "${GitHubUser}", "repo": "${GitHubRepoName}",
                   "baseBranch": "${ReleaseBranch}", "headBranch": "${SourceRepoBranch}"
                   }'
-              RunOrder: 3
-        - name: s3codebuildDeploy
-          actions:
-            - name: s3codebuilddeploy
-              actionTypeId:
-                category: Test
-                owner: AWS
-                provider: CodeBuild
-                version: '1'
-              runOrder: 1
-              configuration:
-                ProjectName: !Ref CodeBuildS3Sync
-              outputArtifacts:
-                - name: s3codebuilddeployOut
-              inputArtifacts:
-                - name: Source
-              region: !Ref AWS::Region
-        - Name: S3Source
+              RunOrder: 1
+        - Name: S3CodeBuildDeploy
           Actions:
-            - Name: TemplateSource
+            - Name: S3-CodeBuild-Deploy
               ActionTypeId:
-                Category: Source
+                Category: Test
                 Owner: AWS
-                Provider: S3
+                Provider: CodeBuild
                 Version: '1'
+              RunOrder: 1
               Configuration:
-                S3Bucket: !Ref ArtifactBucket
-                S3ObjectKey: prod_stack_deploy.zip
+                ProjectName: !Ref CodeBuildS3Sync
               OutputArtifacts:
-                - Name: TemplateSource
-              RunOrder: '1'
+                - Name: S3CodeBuildDeployOut
+              InputArtifacts:
+                - Name: Source
+              Region: !Ref AWS::Region
         - Name: ProdStage
           Actions:
             - Name: CreateChangeSet
@@ -100,14 +101,15 @@ Resources:
                 Provider: CloudFormation
                 Version: '1'
               InputArtifacts:
-                - Name: TemplateSource
+                - Name: S3ConfigOut
               Configuration:
                 ActionMode: CHANGE_SET_REPLACE
+                Capabilities: CAPABILITY_IAM,CAPABILITY_NAMED_IAM,CAPABILITY_AUTO_EXPAND
                 RoleArn: !Ref CFNRoleArn
                 StackName: !Ref ProdStackName
                 ChangeSetName: !Sub "${ProdStackName}-change-set"
-                TemplateConfiguration: !Sub "TemplateSource::${ProdStackConfig}"
-                TemplatePath: !Sub "TemplateSource::${TemplateFileName}"
+                TemplateConfiguration: !Sub "S3CodeBuildDeployOut::${ProdStackConfig}"
+                TemplatePath: !Sub "S3CodeBuildDeployOut::${TemplateFileName}"
               RunOrder: '1'
             - Name: ApproveChangeSet
               ActionTypeId:
@@ -202,11 +204,6 @@ Resources:
                 - cd $PROJECTNAME
                 - rm -rf .git/
                 - aws s3 sync . s3://$CONFIG_BUCKET/$PROJECTNAME/
-                - aws s3 cp s3://$CONFIG_BUCKET/$PROD_CONFIG .
-                - INPUT_FILE=$(echo $PROD_CONFIG | awk -F/ '{print $NF}')
-                - aws s3 cp templates/$CFN_ROOT_TEMPLATE .
-                - zip prod_stack_deploy.zip $INPUT_FILE $CFN_ROOT_TEMPLATE
-                - aws s3 cp prod_stack_deploy.zip s3://$ARTIFACT_BUCKET/
                 - exit $?
 
 
