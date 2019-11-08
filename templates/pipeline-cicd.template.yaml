@@ -45,7 +45,7 @@ Resources:
                 S3Bucket: !Ref ConfigBucket
                 S3ObjectKey: !Sub '${GitHubRepoName}.zip'
               OutputArtifacts:
-                - name: S3ConfigOut
+                - Name: S3ConfigOut
               InputArtifacts: []
               Region: !Ref 'AWS::Region'
         - Name: Build
@@ -108,8 +108,8 @@ Resources:
                 RoleArn: !Ref CFNRoleArn
                 StackName: !Ref ProdStackName
                 ChangeSetName: !Sub "${ProdStackName}-change-set"
-                TemplateConfiguration: !Sub "S3CodeBuildDeployOut::${ProdStackConfig}"
-                TemplatePath: !Sub "S3CodeBuildDeployOut::${TemplateFileName}"
+                TemplateConfiguration: !Sub "S3ConfigOut::${ProdStackConfig}"
+                TemplatePath: !Sub "S3ConfigOut::${TemplateFileName}"
               RunOrder: '1'
             - Name: ApproveChangeSet
               ActionTypeId:
@@ -153,15 +153,11 @@ Resources:
           - Name: GITHUBTOKEN
             Value: !Sub '${GitHubOAuthToken}'
           - Name: SOURCEBRANCH
-            Value: !Sub '${SourceRepoBranch}'
+            Value: !Sub '${ReleaseBranch}'
           - Name: ARTIFACT_BUCKET
             Value: !Ref 'ArtifactBucket'
           - Name: CONFIG_BUCKET
             Value: !Ref 'ConfigBucket'
-          - Name: PROD_CONFIG
-            Value: !Ref ProdStackConfig
-          - Name: CFN_ROOT_TEMPLATE
-            Value: !Ref TemplateFileName
 
       Source:
         Type: CODEPIPELINE
@@ -213,6 +209,7 @@ Resources:
       Description: !Sub 'Submit build jobs for ${GitHubRepoName} as part of CI/CD
         pipeline'
       ServiceRole: !Ref 'CodeBuildRoleArn'
+      TimeoutInMinutes: 60
       Artifacts:
         Type: CODEPIPELINE
       Environment:
