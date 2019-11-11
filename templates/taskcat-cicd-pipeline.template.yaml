@@ -137,6 +137,7 @@ Resources:
         Email: !Ref Email
         ProdStackName: !Ref ProdStackName
         ConfigBucket: !Ref ConfigBucket
+        CodeHostingBucket: !Ref CodeHostingBucket
         ProdStackConfig: !Ref ProdStackConfig
         TestStackConfig: !Ref TestStackConfig
         TemplateFileName: !Ref TemplateFileName
@@ -167,7 +168,10 @@ Parameters:
     Type: String
   ConfigBucket:
     Type: String
-    Description: S3 bucket where your production and test configurations are stored
+    Description: S3 bucket in the deployment Region where your production and test configurations are stored.
+  CodeHostingBucket:
+    Type: String
+    Description: S3 bucket in US East (N. Virginia) Region where your production Quick Start assets are stored.
   ProdStackConfig:
     Description: The S3 key prefix of the configuration file name for the production stack
     Type: String

@@ -152,12 +152,12 @@ Resources:
             Value: !Sub '${GitHubUser}'
           - Name: GITHUBTOKEN
             Value: !Sub '${GitHubOAuthToken}'
-          - Name: SOURCEBRANCH
+          - Name: RELEASEBRANCH
             Value: !Sub '${ReleaseBranch}'
           - Name: ARTIFACT_BUCKET
             Value: !Ref 'ArtifactBucket'
-          - Name: CONFIG_BUCKET
-            Value: !Ref 'ConfigBucket'
+          - Name: CODE_HOSTING_BUCKET
+            Value: !Ref 'CodeHostingBucket'
 
       Source:
         Type: CODEPIPELINE
@@ -187,7 +187,7 @@ Resources:
                 - git init
                 - git remote add origin https://$GITHUBTOKEN@github.com/$GITHUBUSER/$PROJECTNAME.git
                 - git fetch
-                - git checkout -ft origin/$SOURCEBRANCH
+                - git checkout -ft origin/$RELEASEBRANCH
                 - git submodule init
                 - git submodule update --recursive
                 - ls -lR
@@ -199,7 +199,7 @@ Resources:
                 - echo Entered the deploy phase...
                 - cd $PROJECTNAME
                 - rm -rf .git/
-                - aws s3 sync . s3://$CONFIG_BUCKET/$PROJECTNAME/
+                - aws s3 sync . s3://$CODE_HOSTING_BUCKET/$PROJECTNAME/
                 - exit $?
 
 
@@ -331,6 +331,9 @@ Parameters:
   CFNRoleArn:
     Description: CloudFormation service role ARN
     Type: String
+  CodeHostingBucket:
+    Type: String
+    Description: S3 bucket in US East (N. Virginia) Region where your production Quick Start assets are stored.
   ConfigBucket:
     Type: String
     Description: S3 bucket where your production and test configurations are stored
