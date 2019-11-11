@@ -1,6 +1,6 @@
 AWSTemplateFormatVersion: '2010-09-09'
 Description: 'Creates Pipeline and required resources for TaskCat CI. License: Apache
-  2.0 (Please do not remove)(qs-1ops82lkf)'
+  2.0 (Please do not remove)(qs-1q5ruad8m)'
 Resources:
   CopyLambdasStack:
     Type: AWS::CloudFormation::Stack
@@ -204,15 +204,25 @@ Metadata:
   AWS::CloudFormation::Interface:
     ParameterGroups:
       - Label:
-          default: GitHub Configuration
+          default: GitHub configuration
         Parameters:
           - GitHubUser
+          - GitHubOAuthToken
           - GitHubRepoName
           - SourceRepoBranch
           - ReleaseBranch
-          - GitHubOAuthToken
       - Label:
-          default: AWS Quick Start Configuration
+          default: AWS CodePipeline configuration
+        Parameters:
+          - Email
+          - ConfigBucket
+          - CodeHostingBucket
+          - ProdStackName
+          - ProdStackConfig
+          - TemplateFileName
+          - TestStackConfig
+      - Label:
+          default: AWS Quick Start configuration
         Parameters:
           - QSS3BucketName
           - QSS3KeyPrefix
