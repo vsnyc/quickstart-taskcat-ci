@@ -141,6 +141,7 @@ Resources:
         ProdStackConfig: !Ref ProdStackConfig
         TestStackConfig: !Ref TestStackConfig
         TemplateFileName: !Ref TemplateFileName
+        KeepTestStack: !Ref KeepTestStack
 Parameters:
   Email:
     Description: The email address where CodePipeline sends pipeline notifications
@@ -178,6 +179,13 @@ Parameters:
   TestStackConfig:
     Description: The S3 key prefix of the configuration file name for the test stack
     Type: String
+  KeepTestStack:
+    Description: Whether to keep or automatically delete the test stack
+    Type: String
+    Default: 'False'
+    AllowedValues:
+      - 'True'
+      - 'False'
   TemplateFileName:
     Description: The file name of the main CloudFormation template
     Type: String

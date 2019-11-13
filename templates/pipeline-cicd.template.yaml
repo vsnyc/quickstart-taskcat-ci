@@ -231,6 +231,8 @@ Resources:
             Value: !Ref 'ConfigBucket'
           - Name: TEST_OVERRIDE_CONFIG
             Value: !Ref TestStackConfig
+          - Name: KEEP_TEST_STACK
+            Value: !Ref KeepTestStack
 
       Source:
         Type: CODEPIPELINE
@@ -275,7 +277,13 @@ Resources:
               commands:
                 - echo Entered the build phase...
                 - aws s3 cp s3://$CONFIG_BUCKET/$TEST_OVERRIDE_CONFIG $PROJECTNAME/ci/
-                - taskcat -c $PROJECTNAME/ci/taskcat.yml --enable-sig-v2
+                - |
+                  if [ $KEEP_TEST_STACK == 'True' ]
+                  then
+                    taskcat -c $PROJECTNAME/ci/taskcat.yml --enable-sig-v2
+                  else
+                    taskcat -c $PROJECTNAME/ci/taskcat.yml --enable-sig-v2 -n
+                  fi
                 - ls -1 taskcat_outputs
                 - ls -1 taskcat_outputs | while read LOG; do cat taskcat_outputs/${LOG}; done
                 - echo Zipping and uploading report to $ARTIFACT_BUCKET S3 bucket
@@ -343,6 +351,13 @@ Parameters:
   ProdStackConfig:
     Description: The configuration file name for the production stack
     Type: String
+  KeepTestStack:
+    Description: Whether to keep or automatically delete the test stack
+    Type: String
+    Default: 'False'
+    AllowedValues:
+      - 'True'
+      - 'False'
   TestStackConfig:
     Description: The configuration file name for the test stack
     Type: String
