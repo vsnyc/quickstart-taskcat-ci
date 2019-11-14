@@ -39,7 +39,7 @@ Resources:
                 Owner: AWS
                 Provider: S3
                 Version: '1'
-              RunOrder: 2
+              RunOrder: 1
               Configuration:
                 PollForSourceChanges: 'false'
                 S3Bucket: !Ref ConfigBucket
