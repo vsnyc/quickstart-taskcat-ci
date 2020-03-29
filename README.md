@@ -10,7 +10,7 @@ TaskCat is a tool that tests AWS CloudFormation templates. It creates stacks in 
 
 TaskCat is available as an [open-source tool in GitHub](https://github.com/aws-quickstart/taskcat).
 
-![Quick Start architecture for CI/CD Pipeline for AWS CloudFormation templates on AWS](https://d0.awsstatic.com/partner-network/QuickStart/datasheets/cicd-taskcat-pipeline.png)
+![Quick Start architecture for CI/CD Pipeline for AWS CloudFormation templates on AWS](https://flint-prodcms-forge.s3.amazonaws.com/prod/s3fs-public/2019-11/slide2.png)
 
 For architectural details, best practices, step-by-step instructions, and customization options, see the 
 [deployment guide](https://fwd.aws/mnpXR).
