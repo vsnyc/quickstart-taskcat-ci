@@ -5,13 +5,16 @@ IP_ADDRESS="10.0.0.1\/24"
 
 # DO NOT MODIFY BELOW THIS LINE
 CODE_HOSTING_BUCKET=$(cat code-bucket.txt)
+CONFIG_HOSTING_BUCKET=$(cat config-bucket.txt)
 
-files=".taskcat_overrides.yml qs-prod-cfn.json qs-prod-codepipeline.json"
+files="../.taskcat.yml .taskcat_overrides.yml qs-prod-cfn.json qs-prod-codepipeline.json"
 
 echo "Updating input parameter files"
 for f in $files; do
     gsed -i "s/YOUR_CODE_HOSTING_BUCKET/$CODE_HOSTING_BUCKET/g" $f
 done    
+
+gsed -i "s/YOUR_CONFIG_HOSTING_BUCKET/$CONFIG_HOSTING_BUCKET/g" ../.taskcat.yml
 
 echo "Updating CodePipeline configuration zip file"
 PROD_CONFIG=qs-prod-codepipeline.json

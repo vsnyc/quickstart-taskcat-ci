@@ -233,6 +233,8 @@ Resources:
             Value: !Ref TestStackConfig
           - Name: KEEP_TEST_STACK
             Value: !Ref KeepTestStack
+          - Name: DEPLOY_REGION
+            Value: !Ref 'AWS::Region'
 
       Source:
         Type: CODEPIPELINE
@@ -246,6 +248,7 @@ Resources:
                 - apt-get update -y
                 - sudo apt-get install zip gzip tar -y
                 - pip3 install --upgrade pip
+                - pip3 install --upgrade awscli
                 - ln -s /usr/local/bin/pip /usr/bin/pip
             pre_build:
               commands:
@@ -266,13 +269,13 @@ Resources:
                 - git submodule init
                 - git submodule update --recursive
                 - ls -lR
-                - cd ..
+                - ls -l .taskcat*
                 - echo Installing Taskcat using pip3...
                 - pip install taskcat==0.9.23
                 - echo Verifying Taskcat installation...
                 - taskcat
                 - echo Configuring aws cli...
-                - aws configure set default.region us-west-2
+                - aws configure set default.region $DEPLOY_REGION
             build:
               commands:
                 - echo Entered the build phase...

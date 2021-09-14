@@ -20,24 +20,25 @@ project:
 tests:
   quickstart-taskcat-ci-test1:
     parameters:
-      CodeHostingBucket: au-demo-us-east-1
-      ConfigBucket: au-demo-us-west-2
+      CodeHostingBucket: YOUR_CODE_HOSTING_BUCKET
+      ConfigBucket: YOUR_CONFIG_HOSTING_BUCKET
       Email: email@example.com
-      GitHubOAuthToken: github-token
-      GitHubRepoName: github-repo-name
-      GitHubUser: aws-quickstart
-      ProdStackConfig: forge-prod-us-west-2.json
-      ProdStackName: autodesk-prod
+      GitHubOAuthToken: OVERRIDE_THIS
+      GitHubRepoName: quickstart-serverless-survey
+      GitHubUser: OVERRIDE_THIS
+      ProdStackConfig: qs-prod-codepipeline.json
+      ProdStackName: survey-prod
       QSS3BucketName: $[taskcat_autobucket]
       QSS3KeyPrefix: quickstart-taskcat-ci/
-      ReleaseBranch: master
+      ReleaseBranch: main
       SourceRepoBranch: develop
-      TemplateFileName: autodesk-forge-master.json
-      TestStackConfig: config/test/taskcat_project_override.json
+      TemplateFileName: serverless-survey.template.yaml
+      TestStackConfig: .taskcat_overrides.yml
     regions:
     - us-east-1
     - us-east-2
     - us-west-1
     - us-west-2
+    - eu-west-1
     s3_bucket: ''
     template: templates/taskcat-cicd-pipeline.template.yaml
