@@ -41,7 +41,7 @@ Resources:
                 Version: '1'
               RunOrder: 1
               Configuration:
-                PollForSourceChanges: 'false'
+                PollForSourceChanges: true
                 S3Bucket: !Ref ConfigBucket
                 S3ObjectKey: !Sub '${GitHubRepoName}.zip'
               OutputArtifacts:
@@ -278,10 +278,11 @@ Resources:
                 - aws configure set default.region $DEPLOY_REGION
             build:
               commands:
-                - echo Entered the build phase...
+                - echo Entered the build phase, checking KEEP_TEST_STACK config...
+                - echo $KEEP_TEST_STACK
                 - aws s3 cp s3://$CONFIG_BUCKET/$TEST_OVERRIDE_CONFIG $PROJECTNAME/
                 - |
-                  if [ $KEEP_TEST_STACK == 'True' ]
+                  if [[ $KEEP_TEST_STACK == 'True' ]]
                   then
                     taskcat test run -l
                   else
