@@ -41,7 +41,7 @@ Resources:
                 Version: '1'
               RunOrder: 1
               Configuration:
-                PollForSourceChanges: true
+                PollForSourceChanges: false #Set this to true to poll, else setup CloudWatch notification
                 S3Bucket: !Ref ConfigBucket
                 S3ObjectKey: !Sub '${GitHubRepoName}.zip'
               OutputArtifacts:
@@ -240,7 +240,8 @@ Resources:
         Type: CODEPIPELINE
         BuildSpec: |
           version: 0.2
-
+          env:
+            shell: bash
           phases:
             install:
               commands:
@@ -282,12 +283,12 @@ Resources:
                 - echo $KEEP_TEST_STACK
                 - aws s3 cp s3://$CONFIG_BUCKET/$TEST_OVERRIDE_CONFIG $PROJECTNAME/
                 - |
-                  if [[ $KEEP_TEST_STACK == 'True' ]]
-                  then
-                    taskcat test run -l
-                  else
-                    taskcat test run -l -n
-                  fi
+                    if [[ $KEEP_TEST_STACK == 'False' ]]
+                    then
+                      taskcat test run -l
+                    else
+                      taskcat test run -l -n
+                    fi
                 - ls -1 taskcat_outputs
                 - ls -1 taskcat_outputs | while read LOG; do cat taskcat_outputs/${LOG}; done
                 - echo Zipping and uploading report to $ARTIFACT_BUCKET S3 bucket
