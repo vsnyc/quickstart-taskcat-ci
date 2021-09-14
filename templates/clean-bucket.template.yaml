@@ -1,0 +1,277 @@
+AWSTemplateFormatVersion: 2010-09-09
+Description: This CloudFormation Template removes non-versioned files from an S3 Bucket.
+  (qs-1nlegmi0o)
+Metadata:
+  cfn-lint: { config: { ignore_checks: [W9006, W9002, W9003] } }
+Parameters:
+  Bucket:
+    Description: The Bucket required for the custom resource to function.
+    Type: String
+Resources:
+  CleanupRole:
+    Type: AWS::IAM::Role
+    Properties:
+      Path: /
+      AssumeRolePolicyDocument:
+        Version: 2012-10-17
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service: lambda.amazonaws.com
+            Action: sts:AssumeRole
+      Policies:
+        - PolicyName: ConfigPolicy
+          PolicyDocument:
+            Version: 2012-10-17
+            Statement:
+              - Sid: Logging
+                Effect: Allow
+                Action:
+                  - logs:AssociateKmsKey
+                  - logs:CancelExportTask
+                  - logs:CreateExportTask
+                  - logs:CreateLogDelivery
+                  - logs:CreateLogGroup
+                  - logs:CreateLogStream
+                  - logs:DeleteDestination
+                  - logs:DeleteLogDelivery
+                  - logs:DeleteLogGroup
+                  - logs:DeleteLogStream
+                  - logs:DeleteMetricFilter
+                  - logs:DeleteQueryDefinition
+                  - logs:DeleteResourcePolicy
+                  - logs:DeleteRetentionPolicy
+                  - logs:DeleteSubscriptionFilter
+                  - logs:DescribeDestinations
+                  - logs:DescribeExportTasks
+                  - logs:DescribeLogGroups
+                  - logs:DescribeLogStreams
+                  - logs:DescribeMetricFilters
+                  - logs:DescribeQueries
+                  - logs:DescribeQueryDefinitions
+                  - logs:DescribeResourcePolicies
+                  - logs:DescribeSubscriptionFilters
+                  - logs:DisassociateKmsKey
+                  - logs:FilterLogEvents
+                  - logs:GetLogDelivery
+                  - logs:GetLogEvents
+                  - logs:GetLogGroupFields
+                  - logs:GetLogRecord
+                  - logs:GetQueryResults
+                  - logs:ListLogDeliveries
+                  - logs:ListTagsLogGroup
+                  - logs:PutDestination
+                  - logs:PutDestinationPolicy
+                  - logs:PutLogEvents
+                  - logs:PutMetricFilter
+                  - logs:PutQueryDefinition
+                  - logs:PutResourcePolicy
+                  - logs:PutRetentionPolicy
+                  - logs:PutSubscriptionFilter
+                  - logs:StartQuery
+                  - logs:StopQuery
+                  - logs:TagLogGroup
+                  - logs:TestMetricFilter
+                  - logs:UntagLogGroup
+                  - logs:UpdateLogDelivery
+                Resource: !Sub arn:${AWS::Partition}:logs:${AWS::Region}:${AWS::AccountId}:log-group:*
+              - Sid: S3Bucket
+                Effect: Allow
+                Action:
+                  - s3:AbortMultipartUpload
+                  - s3:BypassGovernanceRetention
+                  - s3:CreateAccessPoint
+                  - s3:CreateAccessPointForObjectLambda
+                  - s3:CreateBucket
+                  - s3:CreateJob
+                  - s3:DeleteAccessPoint
+                  - s3:DeleteAccessPointForObjectLambda
+                  - s3:DeleteAccessPointPolicy
+                  - s3:DeleteAccessPointPolicyForObjectLambda
+                  - s3:DeleteBucket
+                  - s3:DeleteBucketOwnershipControls
+                  - s3:DeleteBucketPolicy
+                  - s3:DeleteBucketWebsite
+                  - s3:DeleteJobTagging
+                  - s3:DeleteObject
+                  - s3:DeleteObjectTagging
+                  - s3:DeleteObjectVersion
+                  - s3:DeleteObjectVersionTagging
+                  - s3:DeleteStorageLensConfiguration
+                  - s3:DeleteStorageLensConfigurationTagging
+                  - s3:DescribeJob
+                  - s3:GetAccelerateConfiguration
+                  - s3:GetAccessPoint
+                  - s3:GetAccessPointConfigurationForObjectLambda
+                  - s3:GetAccessPointForObjectLambda
+                  - s3:GetAccessPointPolicy
+                  - s3:GetAccessPointPolicyForObjectLambda
+                  - s3:GetAccessPointPolicyStatus
+                  - s3:GetAccessPointPolicyStatusForObjectLambda
+                  - s3:GetAccountPublicAccessBlock
+                  - s3:GetAnalyticsConfiguration
+                  - s3:GetBucketAcl
+                  - s3:GetBucketCORS
+                  - s3:GetBucketLocation
+                  - s3:GetBucketLogging
+                  - s3:GetBucketNotification
+                  - s3:GetBucketObjectLockConfiguration
+                  - s3:GetBucketOwnershipControls
+                  - s3:GetBucketPolicy
+                  - s3:GetBucketPolicyStatus
+                  - s3:GetBucketPublicAccessBlock
+                  - s3:GetBucketRequestPayment
+                  - s3:GetBucketTagging
+                  - s3:GetBucketVersioning
+                  - s3:GetBucketWebsite
+                  - s3:GetEncryptionConfiguration
+                  - s3:GetIntelligentTieringConfiguration
+                  - s3:GetInventoryConfiguration
+                  - s3:GetJobTagging
+                  - s3:GetLifecycleConfiguration
+                  - s3:GetMetricsConfiguration
+                  - s3:GetObject
+                  - s3:GetObjectAcl
+                  - s3:GetObjectLegalHold
+                  - s3:GetObjectRetention
+                  - s3:GetObjectTagging
+                  - s3:GetObjectTorrent
+                  - s3:GetObjectVersion
+                  - s3:GetObjectVersionAcl
+                  - s3:GetObjectVersionForReplication
+                  - s3:GetObjectVersionTagging
+                  - s3:GetObjectVersionTorrent
+                  - s3:GetReplicationConfiguration
+                  - s3:GetStorageLensConfiguration
+                  - s3:GetStorageLensConfigurationTagging
+                  - s3:GetStorageLensDashboard
+                  - s3:ListAccessPoints
+                  - s3:ListAccessPointsForObjectLambda
+                  - s3:ListAllMyBuckets
+                  - s3:ListBucket
+                  - s3:ListBucketMultipartUploads
+                  - s3:ListBucketVersions
+                  - s3:ListJobs
+                  - s3:ListMultipartUploadParts
+                  - s3:ListStorageLensConfigurations
+                  - s3:ObjectOwnerOverrideToBucketOwner
+                  - s3:PutAccelerateConfiguration
+                  - s3:PutAccessPointConfigurationForObjectLambda
+                  - s3:PutAccessPointPolicy
+                  - s3:PutAccessPointPolicyForObjectLambda
+                  - s3:PutAccountPublicAccessBlock
+                  - s3:PutAnalyticsConfiguration
+                  - s3:PutBucketAcl
+                  - s3:PutBucketCORS
+                  - s3:PutBucketLogging
+                  - s3:PutBucketNotification
+                  - s3:PutBucketObjectLockConfiguration
+                  - s3:PutBucketOwnershipControls
+                  - s3:PutBucketPolicy
+                  - s3:PutBucketPublicAccessBlock
+                  - s3:PutBucketRequestPayment
+                  - s3:PutBucketTagging
+                  - s3:PutBucketVersioning
+                  - s3:PutBucketWebsite
+                  - s3:PutEncryptionConfiguration
+                  - s3:PutIntelligentTieringConfiguration
+                  - s3:PutInventoryConfiguration
+                  - s3:PutJobTagging
+                  - s3:PutLifecycleConfiguration
+                  - s3:PutMetricsConfiguration
+                  - s3:PutObject
+                  - s3:PutObjectAcl
+                  - s3:PutObjectLegalHold
+                  - s3:PutObjectRetention
+                  - s3:PutObjectTagging
+                  - s3:PutObjectVersionAcl
+                  - s3:PutObjectVersionTagging
+                  - s3:PutReplicationConfiguration
+                  - s3:PutStorageLensConfiguration
+                  - s3:PutStorageLensConfigurationTagging
+                  - s3:ReplicateDelete
+                  - s3:ReplicateObject
+                  - s3:ReplicateTags
+                  - s3:RestoreObject
+                  - s3:UpdateJobPriority
+                  - s3:UpdateJobStatus
+                Resource:
+                  - !Sub arn:${AWS::Partition}:s3:::${Bucket}
+                  - !Sub arn:${AWS::Partition}:s3:::${Bucket}/*
+  CleanupS3Bucket:
+    Type: Custom::CleanupS3Bucket
+    Properties:
+      ServiceToken: !GetAtt CleanupS3BucketFunction.Arn
+      Region: !Ref AWS::Region
+      Bucket: !Ref Bucket
+  CleanupS3BucketFunction:
+    Type: AWS::Lambda::Function
+    Properties:
+      Description: Removes non-versioned files from an S3 Bucket.
+      Handler: index.handler
+      Runtime: python3.7
+      Role: !GetAtt CleanupRole.Arn
+      Timeout: 240
+      Code:
+        ZipFile: |
+          import json
+          import boto3
+          import cfnresponse
+          import botocore
+
+          s3 = boto3.resource('s3', config=boto3.session.Config(signature_version='s3v4'))
+
+          def create(properties, physical_id):
+            message = 'Create Complete'
+            print(message)
+            return cfnresponse.SUCCESS, None
+
+          def update(properties, physical_id):
+            return create(properties, physical_id)
+
+          def delete(properties, physical_id):
+            region = properties['Region']
+            bucket = properties['Bucket']
+            deleteAll(bucket)
+            print('success')
+            return cfnresponse.SUCCESS, physical_id
+
+          def deleteAll(bucket):
+            bucket_resource = s3.Bucket(bucket)
+            print(("\n[INFO]: Working on bucket [" + str(bucket) + "]"))
+            bucket_resource = s3.Bucket(bucket)
+            print("[INFO]: Getting and deleting all object versions")
+            try:
+              object_versions = bucket_resource.object_versions.all()
+              for object_version in object_versions:
+                # TODO: Delete sets of 1000 object versions to reduce delete requests
+                object_version.delete()
+            except botocore.exceptions.ClientError as e:
+              if e.response['Error']['Code'] == 'AccessDenied':
+                print("[WARNING]: Unable to delete object versions. (AccessDenied)")
+              if e.response['Error']['Code'] == 'NoSuchBucket':
+                print("[WARNING]: Unable to get versions. (NoSuchBucket)")
+              else:
+                print(e)
+
+          def handler(event, context):
+            print("Received event: %s" % json.dumps(event))
+
+            status = cfnresponse.FAILED
+            new_physical_id = None
+
+            try:
+              properties = event.get('ResourceProperties')
+              physical_id = event.get('PhysicalResourceId')
+
+              status, new_physical_id = {
+                'Create': create,
+                'Update': update,
+                'Delete': delete
+              }.get(event['RequestType'], lambda x, y: (cfnresponse.FAILED, None))(properties, physical_id)
+            except Exception as e:
+              print("Exception: %s" % e)
+              status = cfnresponse.FAILED
+            finally:
+              cfnresponse.send(event, context, status, {}, new_physical_id)
+

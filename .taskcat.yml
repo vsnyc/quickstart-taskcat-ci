@@ -1,6 +1,7 @@
 project:
   name: quickstart-taskcat-ci
   owner: quickstart-eng@amazon.com
+  shorten_stack_name: true
   package_lambda: false
   regions:
   - ap-northeast-1
@@ -11,6 +12,7 @@ project:
   - ca-central-1
   - eu-central-1
   - eu-west-1
+  - eu-west-2
   - sa-east-1
   - us-east-1
   - us-east-2
@@ -40,5 +42,6 @@ tests:
     - us-west-1
     - us-west-2
     - eu-west-1
+    - eu-west-2
     s3_bucket: ''
     template: templates/taskcat-cicd-pipeline.template.yaml

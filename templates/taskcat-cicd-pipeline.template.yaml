@@ -145,6 +145,12 @@ Resources:
         TestStackConfig: !Ref TestStackConfig
         TemplateFileName: !Ref TemplateFileName
         KeepTestStack: !Ref KeepTestStack
+  CleanupStack:
+    Type: AWS::CloudFormation::Stack
+    Properties:
+      TemplateURL: !Sub 'https://${QSS3BucketName}.s3.amazonaws.com/${QSS3KeyPrefix}templates/clean-bucket.template.yaml'
+      Parameters:
+        Bucket: !Ref ArtifactBucket
 Parameters:
   Email:
     Description: The email address where CodePipeline sends pipeline notifications
