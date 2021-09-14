@@ -1,0 +1,58 @@
+[
+  {
+    "ParameterKey": "GitHubUser",
+    "ParameterValue": "vsnyc"
+  },
+  {
+    "ParameterKey": "GitHubRepoName",
+    "ParameterValue": "quickstart-autodesk-forge"
+  },
+  {
+    "ParameterKey": "SourceRepoBranch",
+    "ParameterValue": "develop"
+  },
+  {
+    "ParameterKey": "ReleaseBranch",
+    "ParameterValue": "master"
+  },
+  {
+    "ParameterKey": "GitHubOAuthToken",
+    "ParameterValue": "3e30d892cc0c8042e48ff72ea57b6f80cf811cdd"
+  },
+  {
+    "ParameterKey": "Email",
+    "ParameterValue": "shukvino@amazon.com"
+  },
+  {
+    "ParameterKey": "ProdStackName",
+    "ParameterValue": "autodesk-prod"
+  },
+  {
+    "ParameterKey": "ConfigBucket",
+    "ParameterValue": "au-demo-us-west-2"
+  },
+  {
+    "ParameterKey": "CodeHostingBucket",
+    "ParameterValue": "au-demo-us-east-1"
+  },
+  {
+    "ParameterKey": "ProdStackConfig",
+    "ParameterValue": "forge-prod-us-west-2.json"
+  },
+  {
+    "ParameterKey": "TestStackConfig",
+    "ParameterValue": "config/test/taskcat_project_override.json"
+  },
+  {
+    "ParameterKey": "TemplateFileName",
+    "ParameterValue": "autodesk-forge-master.json"
+  },
+  {
+    "ParameterKey": "QSS3BucketName",
+    "ParameterValue": "cftests"
+  },
+  {
+    "ParameterKey": "QSS3KeyPrefix",
+    "ParameterValue": "quickstart-taskcat-ci/"
+  }
+]

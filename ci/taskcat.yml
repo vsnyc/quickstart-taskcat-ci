@@ -21,7 +21,7 @@ global:
 tests:
   quickstart-taskcat-ci-test1:
     parameter_input: input-params1.json
-    template_file: taskcat-ci-pipeline.template
+    template_file: taskcat-cicd-pipeline.template.yaml
     regions:
       - us-east-1
       - us-east-2

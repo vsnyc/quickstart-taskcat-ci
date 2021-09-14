@@ -1,0 +1,7 @@
+.idea
+.taskcat
+taskcat_outputs
+workshop-assets/code-bucket.txt
+workshop-assets/config-bucket.txt
+.taskcat_overrides.yml
+debug

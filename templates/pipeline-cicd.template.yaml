@@ -268,7 +268,7 @@ Resources:
                 - ls -lR
                 - cd ..
                 - echo Installing Taskcat using pip3...
-                - pip install taskcat==0.8.49
+                - pip install taskcat==0.9.23
                 - echo Verifying Taskcat installation...
                 - taskcat
                 - echo Configuring aws cli...
@@ -276,13 +276,13 @@ Resources:
             build:
               commands:
                 - echo Entered the build phase...
-                - aws s3 cp s3://$CONFIG_BUCKET/$TEST_OVERRIDE_CONFIG $PROJECTNAME/ci/
+                - aws s3 cp s3://$CONFIG_BUCKET/$TEST_OVERRIDE_CONFIG $PROJECTNAME/
                 - |
                   if [ $KEEP_TEST_STACK == 'True' ]
                   then
-                    taskcat -c $PROJECTNAME/ci/taskcat.yml --enable-sig-v2
+                    taskcat test run -l
                   else
-                    taskcat -c $PROJECTNAME/ci/taskcat.yml --enable-sig-v2 -n
+                    taskcat test run -l -n
                   fi
                 - ls -1 taskcat_outputs
                 - ls -1 taskcat_outputs | while read LOG; do cat taskcat_outputs/${LOG}; done

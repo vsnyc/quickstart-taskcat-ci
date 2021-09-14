@@ -1,0 +1,6 @@
+{
+  "Parameters": {
+    "ConfigFileLocation": "YOUR_CODE_HOSTING_BUCKET/quickstart-serverless-survey/scripts/config.yaml",
+  }
+}
+

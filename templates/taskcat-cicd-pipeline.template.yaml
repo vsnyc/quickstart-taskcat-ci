@@ -1,15 +1,18 @@
 AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
 Description: 'Creates Pipeline and required resources for TaskCat CI. License: Apache
   2.0 (Please do not remove)(qs-1q5ruad8m)'
 Resources:
   CopyLambdasStack:
-    Type: AWS::CloudFormation::Stack
+    Type: AWS::Serverless::Application
     Properties:
-      TemplateURL: !Sub 'https://${QSS3BucketName}.s3.amazonaws.com/${QSS3KeyPrefix}templates/copy-lambdas.template.yaml'
+      Location:
+        ApplicationId: arn:aws:serverlessrepo:us-east-1:910000848896:applications/serverless-lambda-copyzips
+        SemanticVersion: 0.0.1
       Parameters:
-        BucketName: !Ref 'ArtifactBucket'
-        QSS3BucketName: !Ref 'QSS3BucketName'
-        QSS3KeyPrefix: !Ref 'QSS3KeyPrefix'
+        QSS3BucketName: !Ref QSS3BucketName
+        QSS3KeyPrefix: !Ref QSS3KeyPrefix
+        SourceObjects: "functions/package/lambda.zip"
   SSMStack:
     Type: AWS::CloudFormation::Stack
     DependsOn:
