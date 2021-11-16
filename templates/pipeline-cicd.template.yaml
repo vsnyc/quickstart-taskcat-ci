@@ -235,6 +235,8 @@ Resources:
             Value: !Ref KeepTestStack
           - Name: DEPLOY_REGION
             Value: !Ref 'AWS::Region'
+          - Name: TEST_REGIONS
+            Value: !Ref TestStackRegions
 
       Source:
         Type: CODEPIPELINE
@@ -281,13 +283,15 @@ Resources:
               commands:
                 - echo Entered the build phase, checking KEEP_TEST_STACK config...
                 - echo $KEEP_TEST_STACK
-                - aws s3 cp s3://$CONFIG_BUCKET/$TEST_OVERRIDE_CONFIG $PROJECTNAME/
+                - aws s3 cp s3://$CONFIG_BUCKET/$TEST_OVERRIDE_CONFIG .
+                - ls -l .taskcat*
+                - ls -l
                 - |
                     if [[ $KEEP_TEST_STACK == 'False' ]]
                     then
-                      taskcat test run -l
+                      taskcat test run -l -r $TEST_REGIONS
                     else
-                      taskcat test run -l -n
+                      taskcat test run -l -n -r $TEST_REGIONS
                     fi
                 - ls -1 taskcat_outputs
                 - ls -1 taskcat_outputs | while read LOG; do cat taskcat_outputs/${LOG}; done
@@ -366,6 +370,10 @@ Parameters:
   TestStackConfig:
     Description: The configuration file name for the test stack
     Type: String
+  TestStackRegions:
+    Description: Comma-delimited list of AWS Regions where the deployment should be tested in
+    Type: String
+    Default: us-east-1
   TemplateFileName:
     Description: The file name of the main CloudFormation template
     Type: String

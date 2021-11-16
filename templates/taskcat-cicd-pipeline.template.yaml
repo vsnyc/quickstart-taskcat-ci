@@ -143,6 +143,7 @@ Resources:
         CodeHostingBucket: !Ref CodeHostingBucket
         ProdStackConfig: !Ref ProdStackConfig
         TestStackConfig: !Ref TestStackConfig
+        TestStackRegions: !Ref TestStackRegions
         TemplateFileName: !Ref TemplateFileName
         KeepTestStack: !Ref KeepTestStack
   CleanupStack:
@@ -188,6 +189,10 @@ Parameters:
   TestStackConfig:
     Description: The S3 key prefix of the configuration file name for the test stack
     Type: String
+  TestStackRegions:
+    Description: Comma-delimited list of AWS Regions where the deployment should be tested in
+    Type: String
+    Default: us-east-1
   KeepTestStack:
     Description: Whether to keep or automatically delete the test stack
     Type: String
